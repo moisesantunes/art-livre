@@ -1,0 +1,113 @@
+<html lang="en">
+
+ <head>
+     <meta charset="utf-8">
+     <title>
+         Web Paint!
+     </title>
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+ <style type="text/css">
+ *{box-sizing:border-box;margin:0;padding:0;}
+ body {}
+ canvas {
+ border:1px solid red;
+ display:block;
+ margin:auto;
+ touch-action:none;
+ 
+ }
+ .section {
+ border:1px solid blue;
+ }
+ #hex{
+ width:35px;
+ height:35px;
+ border:none;
+ padding:0;
+ background-color:transparent;
+ 
+ 
+ }
+ </style>
+ </head>
+
+ <input id="hex" type="color"  placeholder="enter hex color"></input> 
+ 
+ <canvas id="draw"></canvas>
+ 
+<section id="info" ></section>
+<!--
+ <script src="app1.js"></script>
+ -->
+ <script type="text/javascript">
+ var canvas = document.getElementById("draw");
+ 
+ var ctx = canvas.getContext("2d");
+ resize();
+ 
+ // resize canvas when window is resized
+ function resize() {
+ ctx.canvas.width = screen.width -20;
+ ctx.canvas.height = screen.height -200;
+ }
+ 
+ // initialize position as 0,0
+ var pos = { x: 0, y: 0 };
+ 
+ // new position from mouse events
+ function setPosition(e) {
+ 
+ pos.x = e.touches[0].clientX;
+ pos.y = e.touches[0].clientY -40;
+// console.log("travou na posição: " , pos.x," - ", pos.y)
+ //alert("a posição é: "+ pos.x+" e "+pos.y + e.clientX )
+ }
+ 
+ function nova(e){
+ setPosition(e)
+// console.log( "atualização de posição")
+console.log("travou na posição: " , pos.x," - ", pos.y)
+
+ }
+ function renovar(e){
+ 
+ console.log( "atualização de posição",pos.x,"-",pos.y)
+ }
+ function draw(e) {
+ 
+ var color = document.getElementById("hex").value || "#000000";
+ 
+ ctx.beginPath(); // begin the drawing path
+ 
+ ctx.lineWidth = 10; // width of line
+ ctx.lineCap = "round"; // rounded end cap
+ ctx.strokeStyle = color; // hex color of line
+ 
+ ctx.moveTo(pos.x, pos.y); // from position
+ setPosition(e);
+ ctx.lineTo(pos.x, pos.y); // to position
+ 
+ ctx.stroke(); // draw it!
+ ctz.closePath()
+ }
+ //add window event listener to trigger when window is resized
+ window.addEventListener("resize", resize);
+ 
+ // add event listeners to trigger on different mouse events
+ //document.addEventListener("mousemove", draw);
+// document.addEventListener("mousedown", setPosition);
+// document.addEventListener("mouseenter", setPosition)
+ 
+ //ouvir eventos de toque
+ document.addEventListener("touchmove", draw);
+ document.addEventListener("touchstart", setPosition);
+// document.addEventListener("mouseenter", setPosition)
+ 
+ 
+ </script>
+ <script type="text/javascript">
+ 
+ 
+ </script>
+
+ </html>

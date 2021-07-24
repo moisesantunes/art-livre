@@ -1,0 +1,171 @@
+<html lang="en">
+
+ <head>
+     <meta charset="utf-8">
+     <title>
+         Web Paint!
+     </title>
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+ <style type="text/css">
+ *{box-sizing:border-box;margin:0;padding:0;}
+ body {}
+ canvas {
+ border:1px solid red;
+ display:block;
+ margin:5px auto;
+ touch-action:none;
+ 
+ }
+ .section {
+ border:1px solid blue;
+ }
+ #hex{
+ width:35px;
+ height:35px;
+ border:none;
+ padding:0;
+ background-color:transparent;
+ 
+ 
+ }
+ </style>
+ </head>
+
+ 
+<canvas id="draw"></canvas>
+
+<input id="hex" type="color"  placeholder="enter hex color"></input> 
+<button onclick="colarCopia()">colar</button>
+<button onclick="apagaUltima()">apagar ultima</button>
+
+<canvas id="draw-copia"></canvas>
+
+<script type="text/javascript">
+ var canvas = document.getElementById("draw");
+ var ctx = canvas.getContext("2d");
+ 
+ //cópia da canvas
+ var canvas1 = document.getElementById("draw-copia");
+ var ctx1 = canvas1.getContext("2d");
+ 
+ let color="";
+ let coord=[];//lista de pontos que define uma linha- durante um movimento do touchMove, quatro pontos: x e y inicial e x e y final
+ let lista_linha=[]
+ let linha=[]
+ let linha_info={}
+ resize();
+function push_linhas(){
+	let i, eixo;
+	linha_info.cor = color;
+	linha_info.coords = linha;
+	lista_linha.push(linha_info)
+	linha=[]
+	linha_info={}
+//	colarCopia()
+/*	
+	for(i=0;i<linha.length;i++){
+		console.log("linha: "+i+" : "+linha[i])
+		for(eixo of linha[i]){
+			console.log(eixo)
+		}
+	 }
+	 */
+ }
+ // resize canvas when window is resized
+function resize() {
+	ctx.canvas.width = screen.width -20;
+	ctx.canvas.height = screen.height -200;
+ctx1.canvas.width = screen.width -20;
+ctx1.canvas.height = screen.height -200;
+}
+ 
+ // initialize position as 0,0
+var pos = { x: 0, y: 0 };
+ // new position from mouse events
+function setPosition(e) { 
+	pos.x = e.touches[0].clientX;
+	pos.y = e.touches[0].clientY -5;
+}
+ 
+function draw(e) {
+	color = document.getElementById("hex").value || "#000000";
+	ctx.beginPath(); // begin the drawing path
+	ctx.lineWidth = 10; // width of line
+	ctx.lineCap = "round"; // rounded end cap
+	ctx.strokeStyle = color; // hex color of line
+	ctx.moveTo(pos.x, pos.y); // from position
+	coord.push(pos.x, pos.y)
+	setPosition(e);
+	ctx.lineTo(pos.x, pos.y); // to position
+	coord.push(pos.x, pos.y)
+	ctx.stroke(); // draw it!
+	ctx.closePath()
+	linha.push(coord)
+	coord=[]
+}
+//cópia da função
+function colarCopia() {
+console.log("qtd",lista_linha.length)
+
+	for(let i = 0; i < lista_linha.length; i++){
+	//	alert(lista_linha[i].cor)
+//	alert(lista_linha[i].coords.length)
+//console.log("linha: ", i,"coords: " ,JSON.stringify(lista_linha[i].coords))
+		
+
+		for(let p = 0; p < lista_linha[i].coords.length; p++){
+//		console.log("linha", i, "coord: ",p ," - ", lista_linha[i].coords[p][0])
+
+
+			ctx1.beginPath(); // begin the drawing path
+			ctx1.lineWidth = 10; // width of line
+			ctx1.lineCap = "round"; // rounded end cap
+			ctx1.strokeStyle = lista_linha[i].cor; // hex color of line
+			ctx1.moveTo(lista_linha[i].coords[p][0], lista_linha[i].coords[p][1]); // from position
+			ctx1.lineTo(lista_linha[i].coords[p][2], lista_linha[i].coords[p][3]); // to position
+			ctx1.stroke(); // draw it!
+			ctx1.closePath()
+		
+		}
+	}
+}
+
+function apagaUltima(){
+alert("apagou")
+	if(lista_linha.length >0){
+	 lista_linha.pop()
+	//	console.log("agora tem ", lista_linha.length)
+	resize()
+	colarCopia()
+	}else{
+	console.log("não tem ", lista_linha.length)
+	
+	}
+//	colarCopia()
+}
+function clear() {
+    ctx.fillStyle = "#f0033a";
+    ctx.rect(0, 0, 300, 300);
+    ctx.fill();
+    alert("em branco")
+  }
+  
+ //add window event listener to trigger when window is resized
+window.addEventListener("resize", resize);
+canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchstart", setPosition);
+canvas.addEventListener("touchend", push_linhas)
+
+
+/*
+* nesse ponto eu tentei criar funções que copiam, cola e refaz e eclui. a última linha,o objetivo agora a reproduzir tudo de um modo mais definitivo
+*
+*/
+ 
+ </script>
+ <script type="text/javascript">
+ 
+ 
+ </script>
+
+ </html>
